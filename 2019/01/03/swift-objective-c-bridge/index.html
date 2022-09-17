@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Chandler Zou">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Swift和Objective-C交互初始化在Swift中调用OC初始化方法，需要用Swift的初始化方式来调用，OC中的初始化多以init开头，如果带有参数，则会经常是initWith为前缀，Swift中，init会变成Swift初始化方法，如果带有参数，则会省略With，其他视情况而定OC： 12- (instancetype)init;- (instancetype)initWithFram">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swift Objective-C 桥接">
+<meta property="og:url" content="http://example.com/2019/01/03/swift-objective-c-bridge/index.html">
+<meta property="og:site_name" content="Chandler Zou">
+<meta property="og:description" content="Swift和Objective-C交互初始化在Swift中调用OC初始化方法，需要用Swift的初始化方式来调用，OC中的初始化多以init开头，如果带有参数，则会经常是initWith为前缀，Swift中，init会变成Swift初始化方法，如果带有参数，则会省略With，其他视情况而定OC： 12- (instancetype)init;- (instancetype)initWithFram">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-01-03T14:45:15.000Z">
+<meta property="article:modified_time" content="2022-09-17T08:34:35.159Z">
+<meta property="article:author" content="Chandler Zou">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Swift Objective-C 桥接 - Chandler Zou</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"SWIFT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Chandler Zou</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-books"></i>
+                blog
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Swift Objective-C 桥接"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2019-01-03 22:45" pubdate>
+          January 3, 2019 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Swift Objective-C 桥接</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Swift和Objective-C交互"><a href="#Swift和Objective-C交互" class="headerlink" title="Swift和Objective-C交互"></a>Swift和Objective-C交互</h1><h1 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h1><p>在Swift中调用OC初始化方法，需要用Swift的初始化方式来调用，OC中的初始化多以init开头，如果带有参数，则会经常是initWith为前缀，Swift中，init会变成Swift初始化方法，如果带有参数，则会省略With，其他视情况而定<br>OC：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs objc">- (<span class="hljs-keyword">instancetype</span>)init;<br>- (<span class="hljs-keyword">instancetype</span>)initWithFrame:(<span class="hljs-built_in">CGRect</span>)frame style:(<span class="hljs-built_in">UITableViewStyle</span>)style;<br></code></pre></td></tr></table></figure>
+<p>Swift:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">init</span>() &#123; <span class="hljs-comment">/* ... */</span> &#125;<br><span class="hljs-keyword">init</span>(<span class="hljs-params">frame</span>: <span class="hljs-type">CGRect</span>, <span class="hljs-params">style</span>: <span class="hljs-type">UITableViewStyle</span>) &#123; <span class="hljs-comment">/* ... */</span> &#125;<br></code></pre></td></tr></table></figure>
+<h1 id="可失败的初始化方法"><a href="#可失败的初始化方法" class="headerlink" title="可失败的初始化方法"></a>可失败的初始化方法</h1><p>首先讲一下Swift的一个特性： 可选值</p>
+<h2 id="Optional-value"><a href="#Optional-value" class="headerlink" title="Optional value"></a>Optional value</h2><p>Optional value可选值是Swift的一个特性，Swift中只有可选类型可以为nil，</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs delphi"><span class="hljs-comment">//this work</span><br><span class="hljs-keyword">var</span> canBeNil : Int? = <span class="hljs-number">4</span><br>canBeNil = <span class="hljs-keyword">nil</span><br><span class="hljs-comment">//this not work</span><br><span class="hljs-keyword">var</span> cantBeNil : Int = <span class="hljs-number">4</span><br>cantBeNil = <span class="hljs-keyword">nil</span> <span class="hljs-comment">// can&#x27;t do this</span><br></code></pre></td></tr></table></figure>
+<p>如果要从一个可选值中取值，就必须解包（unwrap），</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-tag">var</span> canBeNil : Int? = <span class="hljs-number">4</span><br><span class="hljs-built_in">println</span>(canBeNil!)<br></code></pre></td></tr></table></figure>
+<p>或者直接将可选类型的?更改为!，可以实现自动解包</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-selector-tag">var</span> canBeNil : Int! = <span class="hljs-number">4</span><br><span class="hljs-function"><span class="hljs-title">print</span><span class="hljs-params">(canBeNil)</span></span> <span class="hljs-comment">// no unwrapping needed</span><br></code></pre></td></tr></table></figure>
+<p>如果你编写的OC初始化方法没有加特别处理，那么Swift会默认将所引入的OC引用视为隐式解包的可选值类型，这就需要在初始化后添加?或者!，然而!这种写法在Swift的规则中是非常不推荐，如果初始化失败，那么会造成运行时错误。<br>而且在大型项目中引用OC编写的依赖，Xcode可能无法自动添加?来完成隐式解包，所以在不了解这一个坑的情况下容易出现初始化报错，也可能在单例模式下出现optional chaining报错，只能手动添加?或 !来进行解包，或者进行optioanl binding。</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@interface</span> <span class="hljs-attribute">Robot </span>: NSObject<br><span class="hljs-variable">@property</span> (copy,readonly) NSString *name;<br><span class="hljs-selector-tag">-</span> (instancetype)<span class="hljs-selector-tag">initWithName</span>:(NSString *)<span class="hljs-selector-tag">name</span>;<br><span class="hljs-selector-tag">-</span> (NSString *)<span class="hljs-selector-tag">tellMeSomething</span>;<br>@<span class="hljs-selector-tag">end</span><br></code></pre></td></tr></table></figure>
+<p>然后在Xcode中将这个类引用到Swift中，然后在interface中查看，这个类会被映射为：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Robot</span> : <span class="hljs-title class_">NSObject</span> &#123;    <br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">var</span> name: <span class="hljs-type">String</span>! &#123; <span class="hljs-keyword">get</span> &#125;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">init!</span>(<span class="hljs-params">name</span>: <span class="hljs-type">String</span>!)<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">tellMeSomething</span>() -&gt; <span class="hljs-type">String</span>!<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>在OC中，初始化方法返回nil是常见的情况，但是Swift引入了可选值机制，只有可选值可以为nil，所以Swift的初始化方法只能返回一个必定存在的值或者可选值。</p>
+<h1 id="可空性"><a href="#可空性" class="headerlink" title="可空性"></a>可空性</h1><p>其实很简单：</p>
+<ul>
+<li>标记为<code>nonnull</code>， Swift会将其映射为正常类型</li>
+<li>标记为<code>nullable</code>， Swift会将其映射为正常类型</li>
+</ul>
+<h2 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h2><p>在OC中：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objectivec"><span class="hljs-keyword">@property</span> (<span class="hljs-keyword">nonnull</span>,<span class="hljs-keyword">copy</span>,<span class="hljs-keyword">readonly</span>) <span class="hljs-built_in">NSString</span> *name;<br></code></pre></td></tr></table></figure>
+
+<p>那么Swift映射就是</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs delphi"><span class="hljs-keyword">public</span> <span class="hljs-keyword">var</span> <span class="hljs-keyword">name</span>: <span class="hljs-keyword">String</span> <span class="hljs-comment">&#123; get &#125;</span><br></code></pre></td></tr></table></figure>
+<h2 id="初始化方法"><a href="#初始化方法" class="headerlink" title="初始化方法"></a>初始化方法</h2><p>OC:</p>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs elm">- (nullable instance<span class="hljs-keyword">type</span>)initWithName:(nonnull <span class="hljs-type">NSString</span> *)name;<br></code></pre></td></tr></table></figure>
+<p>Swift:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">public</span> <span class="hljs-keyword">init?</span>(<span class="hljs-params">name</span>: <span class="hljs-type">String</span>)<br></code></pre></td></tr></table></figure>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>其实初始化方法和函数是一样的,OC</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objectivec">- (<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">NSString</span> *)tellMeSomething;<br></code></pre></td></tr></table></figure>
+
+<p>Swift</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livescript">public func tellMeSomething<span class="hljs-function"><span class="hljs-params">()</span> -&gt;</span> <span class="hljs-built_in">String</span>?<br></code></pre></td></tr></table></figure>
+<h1 id="快速简洁高效的方法"><a href="#快速简洁高效的方法" class="headerlink" title="快速简洁高效的方法"></a>快速简洁高效的方法</h1><p>如果说在OC大部分属性和方法在映射Swift时需要为正常类型，仅有少部分为可为空的可选类型，那么每次添加可空性关键字未免太过麻烦，这里可以添加一个作用域：<code>NS_ASSUME_NONNULL_BEGIN</code>和 <code>NS_ASSUME_NONNULL_END</code></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs objectivec"><span class="hljs-built_in">NS_ASSUME_NONNULL_BEGIN</span><br><span class="hljs-class"><span class="hljs-keyword">@interface</span> <span class="hljs-title">Robot</span> : <span class="hljs-title">NSObject</span></span><br><span class="hljs-keyword">@property</span> (<span class="hljs-keyword">copy</span>,<span class="hljs-keyword">readonly</span>) <span class="hljs-built_in">NSString</span> *name; <span class="hljs-comment">//不为空</span><br>- (<span class="hljs-keyword">nullable</span> <span class="hljs-keyword">instancetype</span>)initWithName:(<span class="hljs-built_in">NSString</span> *)name; <span class="hljs-comment">//初始化可失败</span><br>- (<span class="hljs-keyword">nullable</span> <span class="hljs-built_in">NSString</span> *)tellMeSomething; <span class="hljs-comment">//返回值可为空</span><br><span class="hljs-keyword">@end</span><br><br><span class="hljs-built_in">NS_ASSUME_NONNULL_END</span><br></code></pre></td></tr></table></figure>
+<p>对应Swift映射</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Robot</span> : <span class="hljs-title class_">NSObject</span> &#123;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">var</span> name: <span class="hljs-type">String</span> &#123; <span class="hljs-keyword">get</span> &#125;<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">init?</span>(<span class="hljs-params">name</span>: <span class="hljs-type">String</span>)<br>  <span class="hljs-keyword">public</span> <span class="hljs-keyword">func</span> <span class="hljs-title function_">tellMeSomething</span>() -&gt; <span class="hljs-type">String</span>?<br>&#125;<br></code></pre></td></tr></table></figure>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><p><a target="_blank" rel="noopener" href="https://useyourloaf.com/blog/using-nullable-to-annotate-objective-c/">Using nullable to annotate Objective-C code</a><br><a target="_blank" rel="noopener" href="https://developer.apple.com/swift/blog/?id=25">Nullability and Objective-C - Swift Blog - Apple Developer</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/txz_gray/article/details/54406298">Objective-C中nullable、__nullable、_Nullable、_Nonnull的用法 - txz_gray的博客 - CSDN博客</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2ea9c3f737ea">关于OC中的nil, NULL详解 - 简书</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/742c6af3afae">Swift和Objective-C混编 - 简书</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/yingBi2014/article/details/80093102">Swift项目中使用OC混编—创建桥接文件和使用Cocoapods设置User Header Search Paths - 硬币2014 - CSDN博客</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/0646f064d27c">如何在 Swift 项目中使用 OC 的第三方开源库 - 简书</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/top_roboo/article/details/50250785">https://blog.csdn.net/top_roboo/article/details/50250785</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/iOS/" class="category-chain-item">iOS</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/iOS/">#iOS</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Swift Objective-C 桥接</div>
+      <div>http://example.com/2019/01/03/swift-objective-c-bridge/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>Chandler Zou</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>January 3, 2019</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/06/24/why-metaclass/" title="Why metaclass?">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Why metaclass?</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;Table of Contents</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
