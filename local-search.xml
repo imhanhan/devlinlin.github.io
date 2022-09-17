@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>Weekly 2022-37</title>
+    <link href="/2022/09/17/weekly-22-37/"/>
+    <url>/2022/09/17/weekly-22-37/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Weekly-2022-37"><a href="#Weekly-2022-37" class="headerlink" title="Weekly 2022-37"></a>Weekly 2022-37</h1><h2 id="1-autoclosure"><a href="#1-autoclosure" class="headerlink" title="1. @autoclosure"></a>1. @autoclosure</h2><p><a href="https://www.swiftbysundell.com/articles/using-autoclosure-when-designing-swift-apis/">using autoclosure when designing Swift APIs by Sundell</a></p><p>When writing normal closure, we need to add the  <code>&#123; &#125;</code> in <code>()</code>, with <code>@autoclosure</code>, we can directly pass arguments into <code>()</code>, and <code>@autoclosure</code> will automatically wrap it into a closure.</p><p>Before:</p><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-type">UIView</span>.animate(animation: &#123; view.alpha <span class="hljs-operator">=</span> <span class="hljs-number">0</span> &#125;)<br></code></pre></td></tr></table></figure><p>After:</p><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-type">UIView</span>.animate(view.alpha <span class="hljs-operator">=</span> <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure><p><strong>Note that we can not make a closure optional when it’s decorated with <code>@autoclosure</code>.</strong></p><hr><h2 id="2-Difference-between-sink-and-subscribe"><a href="#2-Difference-between-sink-and-subscribe" class="headerlink" title="2. Difference between sink and subscribe"></a>2. Difference between sink and subscribe</h2><p>check <a href="https://stackoverflow.com/questions/61216852/whats-the-difference-between-sink-and-subscribers-sink">stackoverflow answers</a></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>About typealias</title>
     <link href="/2022/03/26/about-typealiads/"/>
     <url>/2022/03/26/about-typealiads/</url>

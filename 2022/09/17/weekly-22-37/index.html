@@ -16,22 +16,21 @@
   <meta name="author" content="Chandler Zou">
   <meta name="keywords" content="">
   
-    <meta name="description" content="About typealiasWhat is typealias?Typealias introduces named alias of existing type. It’s kind like a nick name for existing type Why typealias?Typealias embeds semantics into our types, which can make">
+    <meta name="description" content="Weekly 2022-371. @autoclosureusing autoclosure when designing Swift APIs by Sundell When writing normal closure, we need to add the  &amp;#123; &amp;#125; in (), with @autoclosure, we can directly pass argume">
 <meta property="og:type" content="article">
-<meta property="og:title" content="About typealias">
-<meta property="og:url" content="http://example.com/2022/03/26/about-typealiads/index.html">
+<meta property="og:title" content="Weekly 2022-37">
+<meta property="og:url" content="http://example.com/2022/09/17/weekly-22-37/index.html">
 <meta property="og:site_name" content="Chandler Zou">
-<meta property="og:description" content="About typealiasWhat is typealias?Typealias introduces named alias of existing type. It’s kind like a nick name for existing type Why typealias?Typealias embeds semantics into our types, which can make">
+<meta property="og:description" content="Weekly 2022-371. @autoclosureusing autoclosure when designing Swift APIs by Sundell When writing normal closure, we need to add the  &amp;#123; &amp;#125; in (), with @autoclosure, we can directly pass argume">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-03-26T14:53:52.000Z">
-<meta property="article:modified_time" content="2022-09-17T08:28:21.649Z">
+<meta property="article:published_time" content="2022-09-17T08:50:01.000Z">
+<meta property="article:modified_time" content="2022-09-17T08:56:13.567Z">
 <meta property="article:author" content="Chandler Zou">
-<meta property="article:tag" content="swift">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>About typealias - Chandler Zou</title>
+  <title>Weekly 2022-37 - Chandler Zou</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +195,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="About typealias"></span>
+            <span id="subtitle" data-typed-text="Weekly 2022-37"></span>
           
         </div>
 
@@ -207,8 +206,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-03-26 22:53" pubdate>
-          March 26, 2022 pm
+        <time datetime="2022-09-17 16:50" pubdate>
+          September 17, 2022 pm
         </time>
       </span>
     
@@ -219,7 +218,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.1k words
+          454 words
         
       </span>
     
@@ -230,7 +229,7 @@
         
         
         
-          10 mins
+          4 mins
         
       </span>
     
@@ -268,22 +267,22 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">About typealias</h1>
+            <h1 style="display: none">Weekly 2022-37</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="About-typealias"><a href="#About-typealias" class="headerlink" title="About typealias"></a>About typealias</h1><h2 id="What-is-typealias"><a href="#What-is-typealias" class="headerlink" title="What is typealias?"></a>What is typealias?</h2><p>Typealias introduces named alias of existing type. It’s kind like a nick name for existing type</p>
-<h2 id="Why-typealias"><a href="#Why-typealias" class="headerlink" title="Why typealias?"></a>Why typealias?</h2><p>Typealias embeds semantics into our types, which can make a big difference in making code more intuitive and easier to work with.</p>
-<p>For example, primitive types , such as numbers, strings, when we see them in a function signature, we usually have to rely on the name of that function and its parameters to understand what that value are used for.</p>
-<p>There are two function in codes below. In Example-2, we barely can get the information of metrics of  <code>weight</code>, it could be pound or kilograms. Of course we can change the name to <code>weightInKilograms</code> to specify metric, but type alias let us understand the purpose of the property through type, thus the property can have more concise name.</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs swift"><span class="hljs-comment">// Example 1</span><br><span class="hljs-keyword">typealias</span> <span class="hljs-type">Kilograms</span> <span class="hljs-operator">=</span> <span class="hljs-type">Double</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">User</span> &#123;<br>	<span class="hljs-keyword">var</span> weight: <span class="hljs-type">Kilograms</span><br>&#125;<br><br><span class="hljs-comment">// Example 2</span><br><span class="hljs-keyword">struct</span> <span class="hljs-title class_">User</span> &#123;<br>	<span class="hljs-keyword">var</span> weight: <span class="hljs-type">Double</span><br>&#125;<br></code></pre></td></tr></table></figure>
+                <h1 id="Weekly-2022-37"><a href="#Weekly-2022-37" class="headerlink" title="Weekly 2022-37"></a>Weekly 2022-37</h1><h2 id="1-autoclosure"><a href="#1-autoclosure" class="headerlink" title="1. @autoclosure"></a>1. @autoclosure</h2><p><a target="_blank" rel="noopener" href="https://www.swiftbysundell.com/articles/using-autoclosure-when-designing-swift-apis/">using autoclosure when designing Swift APIs by Sundell</a></p>
+<p>When writing normal closure, we need to add the  <code>&#123; &#125;</code> in <code>()</code>, with <code>@autoclosure</code>, we can directly pass arguments into <code>()</code>, and <code>@autoclosure</code> will automatically wrap it into a closure.</p>
+<p>Before:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-type">UIView</span>.animate(animation: &#123; view.alpha <span class="hljs-operator">=</span> <span class="hljs-number">0</span> &#125;)<br></code></pre></td></tr></table></figure>
 
-<h2 id="Tips-for-typealias"><a href="#Tips-for-typealias" class="headerlink" title="Tips for typealias?"></a>Tips for typealias?</h2><p>Typealias brings semantic to code, but semantic can be confusing sometime, since people don’t share the same context, so you could find a balance when using typealias. </p>
-<h2 id="Links"><a href="#Links" class="headerlink" title="Links:"></a>Links:</h2><p><a target="_blank" rel="noopener" href="https://artsy.github.io/blog/2016/06/24/typealias-for-great-good/">Swift Type Aliases: Use Early and Often</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.avanderlee.com/swift/typealias-usage-swift/">Typealias usage in Swift</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.swiftbysundell.com/articles/the-power-of-type-aliases-in-swift/">The power of type aliases in Swift | Swift by Sundell</a></p>
-<p><a target="_blank" rel="noopener" href="https://sarunw.com/posts/swift-typealias/">Swift typealias: What is it and when to use it | Sarunw</a></p>
+<p>After:</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-type">UIView</span>.animate(view.alpha <span class="hljs-operator">=</span> <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>Note that we can not make a closure optional when it’s decorated with <code>@autoclosure</code>.</strong></p>
+<hr>
+<h2 id="2-Difference-between-sink-and-subscribe"><a href="#2-Difference-between-sink-and-subscribe" class="headerlink" title="2. Difference between sink and subscribe"></a>2. Difference between sink and subscribe</h2><p>check <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/61216852/whats-the-difference-between-sink-and-subscribers-sink">stackoverflow answers</a></p>
 
                 
               </div>
@@ -293,13 +292,6 @@
               <div class="post-metas my-3">
   
   
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/swift/">#swift</a>
-      
-    </div>
-  
 </div>
 
 
@@ -308,8 +300,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>About typealias</div>
-      <div>http://example.com/2022/03/26/about-typealiads/</div>
+      <div>Weekly 2022-37</div>
+      <div>http://example.com/2022/09/17/weekly-22-37/</div>
     </div>
     <div class="license-meta">
       
@@ -321,7 +313,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>March 26, 2022</div>
+          <div>September 17, 2022</div>
         </div>
       
       
@@ -353,18 +345,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/09/17/weekly-22-37/" title="Weekly 2022-37">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Weekly 2022-37</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/01/24/gulu-policy/" title="Gulu 隐私政策">
-                        <span class="hidden-mobile">Gulu 隐私政策</span>
+                      <a href="/2022/03/26/about-typealiads/" title="About typealias">
+                        <span class="hidden-mobile">About typealias</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
